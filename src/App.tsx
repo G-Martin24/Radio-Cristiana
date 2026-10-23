@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Play, Pause, Volume2, VolumeX, Volume1, AlertCircle } from 'lucide-react';
 import { STATION_CONFIG } from './config/station';
-import { ChristianLogo } from './components/ChristianLogo';
 import { ArtworkDisplay } from './components/ArtworkDisplay';
 import { Equalizer } from './components/Equalizer';
 import { StatusIndicator, PlaybackState } from './components/StatusIndicator';
@@ -28,7 +27,7 @@ export default function App() {
   const [metadata, setMetadata] = useState<StationMetadata>({
     artist: '',
     title: 'Transmisión en Vivo',
-    artwork: null,
+    artwork: '/assets/logo-radio-poder.png',
     updatedAt: '',
   });
   const [metadataError, setMetadataError] = useState<boolean>(false);
@@ -44,39 +43,54 @@ export default function App() {
         throw new Error(`HTTP error ${res.status}`);
       }
 
-      const data: StationMetadata = await res.json();
-      setMetadata((prev) => {
-        // Only update if something changed
-        if (
-          prev.artist !== data.artist ||
-          prev.title !== data.title ||
-          prev.artwork !== data.artwork
-        ) {
-          return data;
+      // Check if response is JSON (prevents HTML index fallback syntax errors on misconfigured CDNs)
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const rawText = await res.text();
+        // If it starts with '<', it returned an HTML page instead of JSON API response
+        if (rawText.trim().startsWith('<')) {
+          throw new Error('API returned HTML instead of JSON');
         }
-        return prev;
-      });
-      setMetadataError(false);
-
-      // Update Native MediaSession (Notification and Lock Screen)
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: data.title || STATION_CONFIG.name,
-          artist: data.artist || STATION_CONFIG.name,
-          album: STATION_CONFIG.name,
-          artwork: data.artwork
-            ? [{ src: data.artwork, sizes: '512x512', type: 'image/jpeg' }]
-            : [
-                { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-                { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
-              ],
-        });
+        const data: StationMetadata = JSON.parse(rawText);
+        updateMetadataState(data);
+        return;
       }
+
+      const data: StationMetadata = await res.json();
+      updateMetadataState(data);
     } catch (err) {
-      console.warn('[RadioApp] Could not refresh station metadata:', (err as Error).message);
+      console.warn('[Radio Poder] No se pudieron refrescar los metadatos:', (err as Error).message);
       setMetadataError(true);
     }
   }, []);
+
+  const updateMetadataState = (data: StationMetadata) => {
+    setMetadata((prev) => {
+      if (
+        prev.artist !== data.artist ||
+        prev.title !== data.title ||
+        prev.artwork !== data.artwork
+      ) {
+        return data;
+      }
+      return prev;
+    });
+    setMetadataError(false);
+
+    // Update Native MediaSession (Notification bar and Lock Screen on Android / iOS)
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: data.title || STATION_CONFIG.name,
+        artist: data.artist || STATION_CONFIG.name,
+        album: STATION_CONFIG.name,
+        artwork: [
+          { src: '/assets/logo-radio-poder.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+        ],
+      });
+    }
+  };
 
   // Poll metadata every 15 seconds
   useEffect(() => {
@@ -98,7 +112,7 @@ export default function App() {
     };
     const onWaiting = () => setPlaybackState('connecting');
     const onError = () => {
-      console.error('[RadioApp] Audio playback stream error');
+      console.error('[Radio Poder] Error en stream de audio');
       setPlaybackState('error');
     };
 
@@ -142,7 +156,7 @@ export default function App() {
         await audio.play();
         setPlaybackState('playing');
       } catch (err) {
-        console.error('[RadioApp] Play request error:', err);
+        console.error('[Radio Poder] Error al iniciar reproducción:', err);
         setPlaybackState('error');
       }
     }
@@ -224,9 +238,13 @@ export default function App() {
       {/* Top Header: Brand Zone + Install Action (Strict Top Bar Contract) */}
       <header className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between border-b border-slate-800/60 shrink-0">
         <div className="flex items-center gap-3">
-          <ChristianLogo size={36} />
+          <img
+            src="/assets/logo-radio-poder.png"
+            alt="Logo Radio Poder"
+            className="w-10 h-10 object-contain rounded-xl shadow-md border border-amber-500/20 bg-[#0B132B]"
+          />
           <div>
-            <h1 className="text-base sm:text-lg font-semibold tracking-tight text-white whitespace-nowrap">
+            <h1 className="text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap">
               {STATION_CONFIG.name}
             </h1>
             <p className="text-[11px] text-amber-200/70 font-light hidden sm:block">
@@ -293,7 +311,7 @@ export default function App() {
                   ? 'bg-gradient-to-br from-amber-400 to-[#AA820A] text-[#060913] shadow-amber-500/25 hover:shadow-amber-500/40'
                   : 'bg-gradient-to-br from-amber-300 via-amber-400 to-[#C69214] text-[#060913] shadow-amber-500/30 hover:scale-105'
               } ${playbackState === 'connecting' ? 'opacity-75 cursor-wait' : ''}`}
-              aria-label={isPlaying ? 'Pausar transmisión' : 'Reproducir transmisión en vivo'}
+              aria-label={isPlaying ? 'Pausar transmisión de Radio Poder' : 'Reproducir Radio Poder en vivo'}
             >
               {playbackState === 'connecting' ? (
                 <div className="w-7 h-7 border-3 border-[#060913]/30 border-t-[#060913] rounded-full animate-spin" />
@@ -346,7 +364,7 @@ export default function App() {
           <div className="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-800/50 flex items-center gap-2.5 text-xs text-rose-200 max-w-sm w-full">
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <div className="flex-1">
-              <p className="font-medium">No se pudo conectar al servidor de audio.</p>
+              <p className="font-medium">No se pudo conectar al servidor de Radio Poder.</p>
               <p className="text-[11px] text-rose-300/80">Comprueba tu conexión a internet o reintenta.</p>
             </div>
             <button
@@ -359,10 +377,10 @@ export default function App() {
         )}
       </div>
 
-      {/* Discreet Spiritual Footer (Strict Anti-Slop, no fake telemetry, no social clutter) */}
+      {/* Discreet Spiritual Footer */}
       <footer className="w-full border-t border-slate-900/80 py-4 px-4 text-center text-xs text-slate-500 shrink-0">
         <p className="tracking-wide">
-          «Cantad alegres a Dios, habitantes de toda la tierra.» · Salmo 100:1
+          «El Señor es mi fortaleza y mi cántico.» · Éxodo 15:2
         </p>
       </footer>
     </main>

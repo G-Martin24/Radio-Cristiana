@@ -59,12 +59,12 @@ export default defineConfig(() => {
       stationMetadataPlugin(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.png', 'icons/*.png', 'icons/*.svg'],
+        includeAssets: ['favicon.png', 'icons/*.png', 'assets/*.png'],
         manifest: {
           id: '/',
-          name: 'Radio Cristiana Online',
-          short_name: 'Radio Cristiana',
-          description: 'Radio cristiana en vivo con música de alabanza y adoración, transmisión continua en alta calidad y reproductor PWA.',
+          name: 'Radio Poder',
+          short_name: 'Radio Poder',
+          description: 'Radio Poder en vivo: emisora cristiana con música de alabanza y adoración, transmisión continua en alta calidad y reproductor PWA.',
           theme_color: '#0B132B',
           background_color: '#060913',
           display: 'standalone',

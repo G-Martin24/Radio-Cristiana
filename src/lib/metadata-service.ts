@@ -13,12 +13,12 @@ export interface StationMetadata {
 // In-memory cache to prevent excessive requests to the stream provider
 let cachedMetadata: StationMetadata | null = null;
 let lastCacheTime = 0;
-const CACHE_TTL_MS = 12000; // 12 seconds cache
+const CACHE_TTL_MS = 10000; // 10 seconds cache
 
 /**
  * Decodes standard HTML entities commonly returned by PHP widgets
  */
-function decodeHtmlEntities(str: string): string {
+export function decodeHtmlEntities(str: string): string {
   if (!str) return '';
   return str
     .replace(/&amp;/g, '&')
@@ -64,25 +64,8 @@ export function parseTrackInfo(rawText: string): { artist: string; title: string
 }
 
 /**
- * Extracts base64 image data URI from the HTML response of art.php
- */
-export function extractArtworkDataUri(htmlOrText: string): string | null {
-  if (!htmlOrText || typeof htmlOrText !== 'string') return null;
-
-  // Match data:image/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+
-  const match = htmlOrText.match(/data:image\/(?:jpeg|jpg|png|webp|gif);base64,[A-Za-z0-9+/=]+/i);
-  if (match && match[0]) {
-    // Basic sanity check: valid base64 payload length
-    if (match[0].length > 100) {
-      return match[0];
-    }
-  }
-
-  return null;
-}
-
-/**
- * Fetches current metadata from radiostreaming.pro endpoints
+ * Fetches current metadata from radiostreaming.pro endpoints.
+ * Returns the official Radio Poder logo for artwork, omitting outdated banner images.
  */
 export async function getStationMetadata(forceRefresh = false): Promise<StationMetadata> {
   const now = Date.now();
@@ -100,9 +83,8 @@ export async function getStationMetadata(forceRefresh = false): Promise<StationM
   };
 
   let rawNowPlayText = '';
-  let artworkUri: string | null = null;
 
-  // 1. Fetch Now Playing text
+  // Fetch Now Playing text
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -124,47 +106,21 @@ export async function getStationMetadata(forceRefresh = false): Promise<StationM
 
     if (res.ok) {
       rawNowPlayText = await res.text();
+      console.log('[Metadata:nowplay] Success (status 200). Length:', rawNowPlayText.length, 'Preview:', rawNowPlayText.slice(0, 80));
+    } else {
+      console.warn('[Metadata:nowplay] Non-OK HTTP status:', res.status, res.statusText);
     }
   } catch (err) {
-    console.warn('[MetadataService] Error fetching nowplay.php:', (err as Error).message);
-  }
-
-  // 2. Fetch Artwork
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-    const artParams = new URLSearchParams({
-      user: 'pastordago460',
-      rsys: 'scv2',
-      port: '8440',
-      NoCache: timestamp,
-    });
-
-    const res = await fetch('https://radiostreaming.pro/cp/widgets/player/art.php', {
-      method: 'POST',
-      headers: commonHeaders,
-      body: artParams.toString(),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const artHtml = await res.text();
-      artworkUri = extractArtworkDataUri(artHtml);
-    }
-  } catch (err) {
-    console.warn('[MetadataService] Error fetching art.php:', (err as Error).message);
+    console.warn('[Metadata:nowplay] Request failed:', (err as Error).message);
   }
 
   const { artist, title } = parseTrackInfo(rawNowPlayText);
+  console.log('[Metadata:parse] Parsed track -> Artist:', JSON.stringify(artist), 'Title:', JSON.stringify(title));
 
-  // If we had a previous artwork and the new one failed or is identical, we can decide
   const result: StationMetadata = {
     artist: artist,
     title: title || (cachedMetadata ? cachedMetadata.title : 'Alabanza & Adoración en Vivo'),
-    artwork: artworkUri,
+    artwork: '/assets/logo-radio-poder.png',
     updatedAt: new Date().toISOString(),
   };
 

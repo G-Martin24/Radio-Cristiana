@@ -1,5 +1,5 @@
 /**
- * Central configuration for the Christian Online Radio Station.
+ * Central configuration for Radio Poder.
  * All settings (Station Name, Stream URL, Refresh Interval, Branding, Colors)
  * are easily customizable from this single file.
  */
@@ -15,7 +15,7 @@ export interface StationConfig {
   metadataEndpoint: string;
   /** Metadata polling interval in milliseconds (default: 15s) */
   pollIntervalMs: number;
-  /** Christian logo asset path */
+  /** Main logo asset path */
   logoUrl: string;
   /** Theme palette and brand tokens */
   theme: {
@@ -23,25 +23,25 @@ export interface StationConfig {
     surfaceCard: string;
     surfaceElevated: string;
     goldAccent: string;
-    goldMuted: string;
+    orangeAccent: string;
     textPrimary: string;
     textSecondary: string;
   };
 }
 
 export const STATION_CONFIG: StationConfig = {
-  name: 'Radio Gracia & Verdad',
+  name: 'Radio Poder',
   tagline: 'Alabanza, Adoración y Palabra Viva las 24 horas',
   streamUrl: 'https://radiostreaming.pro:7219/stream',
   metadataEndpoint: '/api/station-metadata',
-  pollIntervalMs: 15000, // 15 seconds as requested
-  logoUrl: '/icons/icon.svg',
+  pollIntervalMs: 15000, // Every 15 seconds
+  logoUrl: '/assets/logo-radio-poder.png',
   theme: {
     background: '#060913',
     surfaceCard: '#0B132B',
     surfaceElevated: '#141E3D',
     goldAccent: '#D4AF37',
-    goldMuted: '#9B812B',
+    orangeAccent: '#F59E0B',
     textPrimary: '#F8FAFC',
     textSecondary: '#94A3B8',
   },
