@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#1E2B58" />
+      <stop offset="50%" stop-color="#0E1630" />
+      <stop offset="100%" stop-color="#060913" />
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082" />
+      <stop offset="50%" stop-color="#D4AF37" />
+      <stop offset="100%" stop-color="#AA820A" />
+    </linearGradient>
+    <linearGradient id="goldLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="30%" stop-color="#FFE89E" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGlow)" />
+  <circle cx="256" cy="256" r="236" fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-opacity="0.35" />
+
+  <!-- Acoustic Radio Wave Arcs (Broadcasting grace) -->
+  <g fill="none" stroke="url(#goldGrad)" stroke-linecap="round" opacity="0.85">
+    <!-- Left Waves -->
+    <path d="M 170 200 A 70 70 0 0 0 170 312" stroke-width="6" opacity="0.9" />
+    <path d="M 132 170 A 115 115 0 0 0 132 342" stroke-width="5" opacity="0.65" />
+    <path d="M 94 140 A 160 160 0 0 0 94 372" stroke-width="4" opacity="0.4" />
+
+    <!-- Right Waves -->
+    <path d="M 342 200 A 70 70 0 0 1 342 312" stroke-width="6" opacity="0.9" />
+    <path d="M 380 170 A 115 115 0 0 1 380 342" stroke-width="5" opacity="0.65" />
+    <path d="M 418 140 A 160 160 0 0 1 418 372" stroke-width="4" opacity="0.4" />
+  </g>
+
+  <!-- Central Light Halo behind cross -->
+  <circle cx="256" cy="226" r="64" fill="#FFE082" opacity="0.12" filter="url(#glow)" />
+
+  <!-- Stylized Christian Cross -->
+  <!-- Vertical Beam -->
+  <rect x="242" y="126" width="28" height="230" rx="14" fill="url(#goldLight)" filter="url(#glow)" />
+  <!-- Horizontal Beam -->
+  <rect x="180" y="196" width="152" height="28" rx="14" fill="url(#goldLight)" filter="url(#glow)" />
+
+  <!-- Central Star / Flare -->
+  <circle cx="256" cy="210" r="10" fill="#FFFFFF" />
+  <polygon points="256,192 260,206 274,210 260,214 256,228 252,214 238,210 252,206" fill="#FFFFFF" opacity="0.95" />
+
+  <!-- Frequency equalizer bars below cross -->
+  <g fill="url(#goldGrad)" opacity="0.9">
+    <rect x="210" y="380" width="8" height="24" rx="4" />
+    <rect x="228" y="370" width="8" height="34" rx="4" />
+    <rect x="246" y="362" width="8" height="42" rx="4" />
+    <rect x="264" y="374" width="8" height="30" rx="4" />
+    <rect x="282" y="382" width="8" height="22" rx="4" />
+    <rect x="300" y="388" width="8" height="16" rx="4" />
+    <rect x="192" y="388" width="8" height="16" rx="4" />
+  </g>
+</svg>

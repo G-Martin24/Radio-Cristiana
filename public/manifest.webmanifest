@@ -1,0 +1,34 @@
+{
+  "id": "/",
+  "name": "Radio Cristiana Online",
+  "short_name": "Radio Cristiana",
+  "description": "Radio cristiana en vivo con música de alabanza y adoración, transmisión continua en alta calidad y reproductor PWA.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#060913",
+  "theme_color": "#0B132B",
+  "lang": "es",
+  "categories": ["music", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

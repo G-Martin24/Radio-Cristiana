@@ -1,0 +1,6 @@
+{
+  "name": "Radio Cristiana Online",
+  "description": "Radio cristiana en vivo con streaming continuo, carátula y metadatos en tiempo real, ecualizador visual y soporte PWA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
