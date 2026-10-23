@@ -259,8 +259,11 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Player Core */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-6 sm:py-8 max-w-xl mx-auto w-full">
+      {/* Main Player Core - Shared Container with Single Width Definition */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center px-4 py-6 sm:py-8 w-full"
+        style={{ ['--radio-panel-width' as any]: 'min(86vw, 360px)' }}
+      >
         {/* Connection & Live Status */}
         <StatusIndicator
           playbackState={playbackState}
@@ -269,7 +272,7 @@ export default function App() {
           className="mb-5 sm:mb-6"
         />
 
-        {/* Album Artwork Display */}
+        {/* Album Artwork Display Card (Strictly width: var(--radio-panel-width), aspect-ratio: 1 / 1) */}
         <ArtworkDisplay
           artworkUrl={metadata.artwork}
           isPlaying={isPlaying}
@@ -277,8 +280,16 @@ export default function App() {
           artistName={metadata.artist}
         />
 
-        {/* Song & Artist Info */}
-        <div className="w-full text-center mt-6 px-4">
+        {/* Song & Artist Info - Matches Shared Panel Width */}
+        <div
+          className="radio-panel-box text-center mt-6 px-1"
+          style={{
+            width: 'var(--radio-panel-width)',
+            maxWidth: '100%',
+            marginInline: 'auto',
+            boxSizing: 'border-box',
+          }}
+        >
           <h2
             className="text-lg sm:text-xl font-bold tracking-tight text-white line-clamp-2 leading-snug drop-shadow-sm"
             title={metadata.title}
@@ -295,12 +306,28 @@ export default function App() {
         </div>
 
         {/* Equalizer Visualizer */}
-        <div className="w-full max-w-xs mt-4 mb-2">
+        <div
+          className="radio-panel-box mt-4 mb-2 flex justify-center"
+          style={{
+            width: 'var(--radio-panel-width)',
+            maxWidth: '100%',
+            marginInline: 'auto',
+            boxSizing: 'border-box',
+          }}
+        >
           <Equalizer isPlaying={isPlaying} audioRef={audioRef} barCount={20} />
         </div>
 
-        {/* Playback Controls Card */}
-        <div className="w-full max-w-sm bg-[#0B132B]/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-4 sm:p-5 mt-2 shadow-xl shadow-black/40">
+        {/* Playback Controls Card - Exact Same Width as Artwork Card */}
+        <div
+          className="radio-panel-box bg-[#0B132B]/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-4 sm:p-5 mt-2 shadow-xl shadow-black/40"
+          style={{
+            width: 'var(--radio-panel-width)',
+            maxWidth: '100%',
+            marginInline: 'auto',
+            boxSizing: 'border-box',
+          }}
+        >
           {/* Main Primary Action: Large Play / Pause button */}
           <div className="flex items-center justify-center gap-6">
             <button
@@ -359,9 +386,17 @@ export default function App() {
           </div>
         </div>
 
-        {/* Stream Error Notice if active */}
+        {/* Stream Error Notice if active - Shared Width */}
         {playbackState === 'error' && (
-          <div className="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-800/50 flex items-center gap-2.5 text-xs text-rose-200 max-w-sm w-full">
+          <div
+            className="radio-panel-box mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-800/50 flex items-center gap-2.5 text-xs text-rose-200"
+            style={{
+              width: 'var(--radio-panel-width)',
+              maxWidth: '100%',
+              marginInline: 'auto',
+              boxSizing: 'border-box',
+            }}
+          >
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
             <div className="flex-1">
               <p className="font-medium">No se pudo conectar al servidor de Radio Poder.</p>

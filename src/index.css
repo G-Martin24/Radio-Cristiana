@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  --radio-panel-width: min(86vw, 360px);
+}
+
+.radio-panel-box {
+  width: var(--radio-panel-width);
+  max-width: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;

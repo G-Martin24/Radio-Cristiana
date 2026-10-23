@@ -13,7 +13,16 @@ export const ArtworkDisplay: React.FC<ArtworkDisplayProps> = ({
   artistName = '',
 }) => {
   return (
-    <div className="relative mx-auto w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 select-none">
+    <div
+      className="relative radio-panel-box select-none"
+      style={{
+        width: 'var(--radio-panel-width)',
+        maxWidth: '100%',
+        marginInline: 'auto',
+        boxSizing: 'border-box',
+        aspectRatio: '1 / 1',
+      }}
+    >
       {/* Outer ambient glow reacting to playback state */}
       <div
         className={`absolute -inset-3 rounded-3xl bg-gradient-to-tr from-amber-500/20 via-sky-600/15 to-amber-300/25 blur-xl transition-all duration-700 pointer-events-none ${
